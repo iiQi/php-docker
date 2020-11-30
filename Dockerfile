@@ -1,4 +1,4 @@
-ARG PHP_VER=7.3.24-fpm
+ARG PHP_VER=7.4.12-fpm
 
 FROM php:${PHP_VER}
 
@@ -11,6 +11,7 @@ RUN set -eux; \
     apt-get update && apt-get install -y \
         libfreetype6-dev \
         libpng-dev \
+        libwebp-dev \
         libzip-dev \
         libmcrypt-dev \
         librabbitmq-dev; \
@@ -25,7 +26,7 @@ RUN set -eux; \
     CFLAGS="-O3 -fPIC" ./configure; \
     make && make install; \
     rm -rf "$dir"; \
-    docker-php-ext-configure gd --with-jpeg-dir= --with-freetype-dir=; \
+    docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp; \
     docker-php-ext-install -j$(nproc) gd bcmath pdo_mysql zip; \
     pecl install amqp; \
     pecl install redis; \
