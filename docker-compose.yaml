@@ -1,0 +1,28 @@
+version: "3.5"
+services:
+    fpm:
+      image: iiqi/php:7.3.24-fpm
+      container_name: fpm
+      volumes:
+        - ./conf/crontab:/root/crontab
+        - ./data:/data
+      ports:
+        - 9000:9000
+      command:
+        - sh
+        - -ec
+        - |
+          # php.ini配置
+          cat <<EOF > /usr/local/etc/php/conf.d/php.ini
+          zend_extension=xdebug
+          EOF
+          
+          # 设置 FPM 进程参数
+          cat <<EOF >> /usr/local/etc/php-fpm.d/zz-www.conf
+          pm.max_children = 10
+          pm.start_servers = 1
+          pm.min_spare_servers = 1
+          pm.max_spare_servers = 10
+          EOF
+          
+          exec entrypoint
