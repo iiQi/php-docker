@@ -1,4 +1,4 @@
-ARG PHP_VER=7.3.24-fpm
+ARG PHP_VER=7.4.12-fpm
 
 FROM php:${PHP_VER}
 
