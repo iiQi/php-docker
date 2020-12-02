@@ -14,7 +14,8 @@ RUN set -eux; \
         libwebp-dev \
         libzip-dev \
         libmcrypt-dev \
-        librabbitmq-dev; \
+        librabbitmq-dev \
+        cron; \
     rm -rf /var/lib/apt/lists/*; \
     cd /usr/src; \
     dir=/usr/src/jpegsrc; \
@@ -28,23 +29,15 @@ RUN set -eux; \
     rm -rf "$dir"; \
     docker-php-ext-configure gd --with-jpeg --with-freetype --with-webp; \
     docker-php-ext-install -j$(nproc) gd bcmath pdo_mysql zip; \
-    pecl install amqp; \
     pecl install redis; \
-    pecl install mcrypt; \
-    docker-php-ext-enable amqp redis mcrypt; \
     pecl install xdebug; \
+    docker-php-ext-enable redis; \
     rm -rf /tmp/pear;
 
 COPY entrypoint /usr/local/bin/
 
 RUN set -eux; \
-    apt-get update && apt-get install -y \
-        cron; \
     chmod +x /usr/local/bin/entrypoint; \
-    rm -rf /var/lib/apt/lists/*;
-
-# 修改fpm运行用户
-RUN set -eux; \
     groupadd -g 1000 www; \
     useradd -g 1000 -u 1000 -b /var -s /bin/bash www; \
     cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini; \
