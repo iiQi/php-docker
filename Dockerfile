@@ -1,4 +1,4 @@
-ARG PHP_VER=7.4.12-fpm
+ARG PHP_VER=7.3.25-fpm
 
 FROM php:${PHP_VER}
 
@@ -13,11 +13,16 @@ RUN set -eux; \
         libpng-dev \
         libzip-dev \
         libmcrypt-dev \
-        librabbitmq-dev; \
+        librabbitmq-dev \
+        libgrpc-dev \
+        protobuf-compiler-grpc \
+        libcurl4-openssl-dev \
+        libgrpc++-dev \
+        cron; \
     rm -rf /var/lib/apt/lists/*; \
     cd /usr/src; \
     dir=/usr/src/jpegsrc; \
-    curl -fsSL -o jpegsrc.tar.gz http://www.ijg.org/files/jpegsrc.v9c.tar.gz; \
+    curl -fsSL -o jpegsrc.tar.gz http://www.ijg.org/files/jpegsrc.v9d.tar.gz; \
     mkdir -p "$dir"; \
     tar -zxf jpegsrc.tar.gz -C "$dir" --strip-components=1; \
     rm jpegsrc.tar.gz; \
@@ -30,20 +35,22 @@ RUN set -eux; \
     pecl install amqp; \
     pecl install redis; \
     pecl install mcrypt; \
-    docker-php-ext-enable amqp redis mcrypt; \
     pecl install xdebug; \
+    dir=/usr/src/skywalking; \
+    curl -fsSL -o skywalking.tar.gz https://github.com/SkyAPM/SkyAPM-php-sdk/archive/master.tar.gz; \
+    mkdir -p "$dir"; \
+    tar -zxf skywalking.tar.gz -C "$dir" --strip-components=1; \
+    rm skywalking.tar.gz; \
+    cd "$dir"; \
+    phpize && ./configure && make && make install; \
+    rm -rf "$dir"; \
+    docker-php-ext-enable amqp redis mcrypt skywalking; \
     rm -rf /tmp/pear;
 
 COPY entrypoint /usr/local/bin/
 
 RUN set -eux; \
-    apt-get update && apt-get install -y \
-        cron; \
     chmod +x /usr/local/bin/entrypoint; \
-    rm -rf /var/lib/apt/lists/*;
-
-# 修改fpm运行用户
-RUN set -eux; \
     groupadd -g 1000 www; \
     useradd -g 1000 -u 1000 -b /var -s /bin/bash www; \
     cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini; \

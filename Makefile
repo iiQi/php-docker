@@ -1,4 +1,4 @@
-VERSION := $(if $(VERSION),$(VERSION),"7.3.24")
+VERSION := $(if $(VERSION),$(VERSION),"7.3.25")
 TYPE := $(if $(TYPE),$(TYPE),"fpm")
 
 all: build push
