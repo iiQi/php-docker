@@ -36,6 +36,7 @@ RUN set -eux; \
     pecl install redis; \
     pecl install mcrypt; \
     pecl install xdebug; \
+    cd /usr/src; \
     dir=/usr/src/skywalking; \
     curl -fsSL -o skywalking.tar.gz https://github.com/SkyAPM/SkyAPM-php-sdk/archive/master.tar.gz; \
     mkdir -p "$dir"; \
