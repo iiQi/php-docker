@@ -25,4 +25,4 @@ services:
           pm.max_spare_servers = 10
           EOF
           
-          exec entrypoint
+          exec php-fpm
