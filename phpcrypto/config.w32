@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("phpcrypto", "for phpcrypto support", "no");
+
+// Otherwise, use ARG_ENABLE
+ARG_ENABLE("phpcrypto", "enable phpcrypto support", "yes");
+
+if (PHP_PHPCRYPTO != "no") {
+	EXTENSION("phpcrypto", "phpcrypto.c", PHP_EXTNAME_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+}
+

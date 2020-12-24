@@ -1,0 +1,14 @@
+ARG PHP_VER
+
+FROM iiqi/php:${PHP_VER}
+
+COPY phpcrypto /usr/src/phpcrypto
+
+RUN set -eux; \
+    cd /usr/src/phpcrypto; \
+    phpize; \
+    ./configure; \
+    make; \
+    make install; \
+    rm -rf /usr/src/phpcrypto; \
+    docker-php-ext-enable phpcrypto;
